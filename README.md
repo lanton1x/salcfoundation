@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# St. Andrew Lutheran Church Foundation, Inc.
+
+Official web application for the **St. Andrew Lutheran Church Foundation, Inc.** (Beaverton, OR — Registered 501(c)(3) Nonprofit Organization, EIN: `93-1055462`).
+
+Built with **Next.js (App Router)**, **React 19**, **Tailwind CSS v4**, and a serverless **AWS Lambda + Google Drive CMS** backend.
+
+---
+
+## Overview
+
+The platform provides St Andrew Lutheran Church congregation, community partners, and grant and scholarship applicants with direct access to:
+
+- **Our Mission & Vision:** Core values, stewardship principles, and organizational reach.
+- **Board of Directors:** Current board leadership, officer roles, and term schedules.
+- **Grants & Scholarships Portal:** Direct integration with the standalone SALCF Grant & Scholarship Application SPA (`salcf-grantapplications`).
+- **ELCA Foundation Resources:** Planning guides, gift planning matrices, and educational materials.
+- **Gift Policies & FAQ:** Comprehensive endowment and contribution guidelines.
+- **Memorial & Legacy Gifts:** Tributes honoring departed saints and perpetual estate/trust endowments, enriched automatically from embedded WebP XMP metadata.
+- **Annual Reports Archive:** Inline-rendered yearly stewardship and financial reports with embedded visual charts.
+
+---
+
+## Architecture & Data Flow
+
+1. **Single-Trip Server Bootstrap (`lib/cmsService.ts`):**
+   - On page load, Next.js executes a single server-side `POST` request (`context: "site_bootstrap"`) to the AWS API Gateway / Lambda proxy (`salcf-load-template`).
+   - Responses are cached on the server via Next.js `'use cache'` and `cacheLife('hours')`, keeping Google Drive credentials completely isolated in AWS Secrets Manager / Parameter Store.
+2. **Pre-Rendering Enrichment:**
+   - **Memorial & Legacy Images:** Raw `.webp` files are fetched server-side during pre-rendering to extract embedded `exiftool` XMP tags (`<dc:description>` and `<dc:subject>`) without external binary dependencies.
+   - **Annual Reports:** Markdown report files (`.md`) are paired with companion `.png` charts in Google Drive, rewriting relative image references into direct Google Drive media URLs for seamless inline rendering.
+3. **Design System ("Reflective Horizon"):**
+   - **Sidebar (`#1E2736`):** Deep Midnight Navy navigation with Crisp White (`#FFFFFF`), Muted Ice Blue (`#A4B3C6`), and Soft Gold (`#D4AF37`) active indicators.
+   - **Main Canvas (`#F0F3F6` & `#E4E9ED`):** Mist Blue content surface separated from the sidebar, featuring Crisp White (`#FFFFFF`) floating cards and Deep Slate Charcoal (`#2C3E50`) WCAG AAA typography.
+
+---
+
+## Project Structure
+
+```text
+salc-foundation/
+├── app/
+│   ├── components/
+│   │   └── FoundationContainer.tsx   # Main responsive layout & tab navigation shell
+│   ├── globals.css                   # Tailwind CSS v4 & @tailwindcss/typography setup
+│   ├── layout.tsx                    # Root metadata, Geist fonts, and viewport shell
+│   └── page.tsx                      # Async Server Component hydrating site bootstrap data
+├── lib/
+│   └── cmsService.ts                 # Cached AWS Lambda client, WebP XMP parser & report enricher
+├── public/
+│   └── salcf_logo.png                # Foundation emblem
+├── next.config.ts                    # Cache Components & Google Drive image remotePatterns
+└── package.json
+```
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- **Node.js** 24
+- **pnpm** (recommended package manager)
+
+### 1. Install Dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env` file in the project root with the following variables (Google Drive credentials and folder IDs remain strictly on AWS Lambda):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Server-side AWS API Gateway endpoint for the polymorphic Lambda router
+AWS_LAMBDA_API_GATEWAY_URL="https://u63h9i8lwg.execute-api.us-west-2.amazonaws.com/default"
 
-## Learn More
+# Public URL for the standalone Grant & Scholarship Application SPA
+NEXT_PUBLIC_GRANT_APP_URL="https://salcf-grantapplications.vercel.app"
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Run the Development Server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Key Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Command | Description |
+| :--- | :--- |
+| `pnpm dev` | Starts the local Next.js development server with Turbopack. |
+| `pnpm build` | Builds the optimized production bundle. |
+| `pnpm start` | Runs the compiled production server locally. |
+| `pnpm lint` | Runs ESLint checks across the codebase. |
+
+---
+
+## Deployment
+
+This application is designed for deployment on **Vercel**. Ensure both `AWS_LAMBDA_API_GATEWAY_URL` and `NEXT_PUBLIC_GRANT_APP_URL` are configured in your Vercel project's **Environment Variables** settings before deploying.
