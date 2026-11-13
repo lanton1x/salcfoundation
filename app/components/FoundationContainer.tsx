@@ -52,6 +52,7 @@ export default function FoundationContainer({ initialData }: FoundationProps) {
   const [selectedReportId, setSelectedReportId] = useState<string>(
     initialData.annualReports[0]?.id || '',
   );
+  const [activeClipIndex, setActiveClipIndex] = useState<number>(0);
 
   const currentYear = useSyncExternalStore(
     () => () => {},
@@ -130,7 +131,7 @@ export default function FoundationContainer({ initialData }: FoundationProps) {
           type="button"
           onClick={() => setMobileMenuOpen((prev) => !prev)}
           aria-label="Toggle navigation menu"
-          className="px-3 py-2 rounded-lg bg-white/[0.08] text-white text-xs font-semibold border border-white/15 hover:bg-white/[0.14] transition-colors cursor-pointer"
+          className="px-3 py-2 rounded-lg bg-white/8 text-white text-xs font-semibold border border-white/15 hover:bg-white/[0.14] transition-colors cursor-pointer"
         >
           {mobileMenuOpen ? 'Close ✕' : 'Menu ☰'}
         </button>
@@ -189,8 +190,8 @@ export default function FoundationContainer({ initialData }: FoundationProps) {
                 onClick={() => handleNavClick(item.id)}
                 className={`w-full text-left px-4 py-2.5 rounded-r-lg text-sm transition-all cursor-pointer border-l-4 ${
                   isActive
-                    ? 'bg-white/[0.08] border-[#D4AF37] text-white font-semibold'
-                    : 'border-transparent text-[#A4B3C6] hover:bg-white/[0.08] hover:text-white font-medium'
+                    ? 'bg-white/8 border-[#D4AF37] text-white font-semibold'
+                    : 'border-transparent text-[#A4B3C6] hover:bg-white/8 hover:text-white font-medium'
                 }`}
               >
                 {item.label}
@@ -207,7 +208,7 @@ export default function FoundationContainer({ initialData }: FoundationProps) {
       </aside>
 
       {/* MAIN CONTENT AREA (MIST BLUE #F0F3F6 WITH #E4E9ED SEPARATION GAP) */}
-      <main className="flex-1 lg:ml-[20.75rem] bg-[#F0F3F6] min-h-screen p-5 sm:p-8 lg:p-10">
+      <main className="flex-1 lg:ml-83 bg-[#F0F3F6] min-h-screen p-5 sm:p-8 lg:p-10">
         <div className="max-w-5xl mx-auto">
           {/* HOME TAB */}
           {currentTab === 'home' && (
@@ -217,12 +218,26 @@ export default function FoundationContainer({ initialData }: FoundationProps) {
                 <h2 className="text-3xl font-extrabold text-[#1E2736] tracking-tight">
                   Welcome to the SALC Foundation
                 </h2>
-                <p className="text-[#2C3E50] leading-relaxed max-w-2xl mt-3">
-                  Providing sustainable resources to fund community ministries,
-                  higher education scholarship awards, and long-term structural
-                  outreach.
-                </p>
-
+                <div className="text-[#2C3E50] leading-relaxed mt-4 space-y-4 text-base">
+                  <p>
+                    Everything our Foundation does is oriented toward the
+                    future, to leave a long-lasting legacy of faith. Thanks to
+                    donations and contributions received, over the last few
+                    years, we have supported St Andrew Lutheran Church&apos;s
+                    Horizon Team work, the Roots children&apos;s ministry space,
+                    attendance for seven St. Andrew members to the Reckoning
+                    with Racism workshop, and a heartfelt donation to support
+                    the Emmanuel Legacy Health Foundation in their effort to
+                    rebuild their chapel, all these in addition to regular
+                    annual scholarships and other grants.
+                  </p>
+                  <p>
+                    If you remember us in your will or make a gift now, you are
+                    ensuring that St. Andrew Lutheran Church Foundation, far in
+                    the future, will have funds to support programs and
+                    activities and people we can only dream of.
+                  </p>
+                </div>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <button
                     type="button"
@@ -241,36 +256,83 @@ export default function FoundationContainer({ initialData }: FoundationProps) {
                 </div>
               </div>
 
-              {/* Media Gallery Card */}
+              {/* Media Gallery Card (Full-Width Continuous Playlist Loop) */}
               <div className="bg-white rounded-2xl p-8 border border-[#E4E9ED] shadow-[0_4px_20px_-2px_rgba(30,39,54,0.05)]">
-                <h3 className="text-xs font-bold uppercase text-[#1E2736]/70 tracking-wider mb-4">
-                  Media Gallery Feed
-                </h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xs font-bold uppercase text-[#1E2736]/70 tracking-wider">
+                    Media Gallery Feed
+                  </h3>
+                  {initialData.homeClips.length > 1 && (
+                    <span className="text-[11px] font-semibold text-[#1E2736]/60">
+                      Clip {activeClipIndex + 1} of{' '}
+                      {initialData.homeClips.length}
+                    </span>
+                  )}
+                </div>
+
                 {initialData.homeClips.length === 0 ? (
                   <p className="text-sm text-[#2C3E50]/70 italic bg-[#F0F3F6] p-4 rounded-xl">
                     No active clips found in Drive storage.
                   </p>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {initialData.homeClips.map((clip: DriveFileItem) => (
-                      <a
-                        key={clip.id}
-                        href={clip.webViewLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="block p-5 bg-[#F0F3F6]/60 border border-[#E4E9ED] rounded-xl hover:border-[#D4AF37] hover:bg-white transition-all shadow-2xs"
-                      >
-                        <p className="text-sm font-bold text-[#1E2736] truncate">
-                          {clip.name}
-                        </p>
-                        {clip.description && (
-                          <p className="text-xs text-[#2C3E50] mt-1.5 leading-relaxed">
-                            {clip.description}
-                          </p>
+                  (() => {
+                    const clips = initialData.homeClips;
+                    const safeIndex = activeClipIndex % clips.length;
+                    const currentClip = clips[safeIndex];
+                    const isSingleClip = clips.length === 1;
+
+                    return (
+                      <div className="space-y-3">
+                        <div className="bg-[#1E2736] border border-[#E4E9ED] rounded-xl overflow-hidden shadow-xs aspect-video w-full relative">
+                          <video
+                            key={currentClip.id}
+                            ref={(el) => {
+                              if (el) {
+                                el.muted = true;
+                                el.defaultMuted = true;
+                                el.play().catch(() => {
+                                  // Fallback if browser power-saving mode blocks initial autoplay
+                                });
+                              }
+                            }}
+                            src={`/api/video/${currentClip.id}`}
+                            autoPlay
+                            loop={isSingleClip}
+                            muted
+                            playsInline
+                            preload="auto"
+                            onEnded={() => {
+                              if (!isSingleClip) {
+                                setActiveClipIndex(
+                                  (prev) => (prev + 1) % clips.length,
+                                );
+                              }
+                            }}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        {/* Subtle Playlist Dots (Only shown when 2+ clips exist) */}
+                        {!isSingleClip && (
+                          <div className="flex items-center justify-center gap-2 pt-1">
+                            {clips.map((clip, idx) => (
+                              <button
+                                key={clip.id}
+                                type="button"
+                                aria-label={`Play clip ${idx + 1}`}
+                                onClick={() => setActiveClipIndex(idx)}
+                                className={`h-2 rounded-full transition-all cursor-pointer ${
+                                  idx === safeIndex
+                                    ? 'w-6 bg-[#D4AF37]'
+                                    : 'w-2 bg-[#1E2736]/20 hover:bg-[#1E2736]/40'
+                                }`}
+                              />
+                            ))}
+                          </div>
                         )}
-                      </a>
-                    ))}
-                  </div>
+                      </div>
+                    );
+                  })()
                 )}
               </div>
             </div>
