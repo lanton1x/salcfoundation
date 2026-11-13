@@ -2,7 +2,7 @@
 
 Official web application for the **St. Andrew Lutheran Church Foundation, Inc.** (Beaverton, OR — Registered 501(c)(3) Nonprofit Organization, EIN: `93-1055462`).
 
-Built with **Next.js (App Router)**, **React 19**, **Tailwind CSS v4**, and a serverless **AWS Lambda + Google Drive CMS** backend.
+Built with **Next.js (App Router)**, **React 19**, **Tailwind CSS v4**, and a serverless **AWS Lambda + Google Drive CMS** backend. Integration with a stand-alone SPA that manages Foundation's Grant and Scholarship applications, built with **React 19**, **Tailwind CSS**, **Resend**, **AWS API Gateway + AWS Lambda + AWS S3 + Google Drive**
 
 ---
 
