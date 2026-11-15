@@ -188,7 +188,7 @@ export default function FoundationContainer({ initialData }: FoundationProps) {
               <button
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
-                className={`w-full text-left px-4 py-2.5 rounded-r-lg text-sm transition-all cursor-pointer border-l-4 ${
+                className={`w-full text-left px-4 py-2.5 rounded-r-lg text-base transition-all cursor-pointer border-l-4 ${
                   isActive
                     ? 'bg-white/8 border-[#D4AF37] text-white font-semibold'
                     : 'border-transparent text-[#A4B3C6] hover:bg-white/8 hover:text-white font-medium'
@@ -214,31 +214,36 @@ export default function FoundationContainer({ initialData }: FoundationProps) {
           {currentTab === 'home' && (
             <div className="space-y-6">
               <div className="bg-white rounded-2xl p-8 border border-[#E4E9ED] shadow-[0_4px_20px_-2px_rgba(30,39,54,0.05)]">
-                <div className="inline-block h-1 w-12 bg-[#D4AF37] rounded-full mb-4" />
-                <h2 className="text-3xl font-extrabold text-[#1E2736] tracking-tight">
-                  Welcome to the SALC Foundation
+                <h2 className="text-2xl font-extrabold text-[#1E2736] tracking-tight">
+                  Welcome to St. Andrew Lutheran Church Foundation
                 </h2>
                 <div className="text-[#2C3E50] leading-relaxed mt-4 space-y-4 text-base">
                   <p>
-                    Everything our Foundation does is oriented toward the
-                    future, to leave a long-lasting legacy of faith. Thanks to
-                    donations and contributions received, over the last few
-                    years, we have supported St Andrew Lutheran Church&apos;s
-                    Horizon Team work, the Roots children&apos;s ministry space,
-                    attendance for seven St. Andrew members to the Reckoning
-                    with Racism workshop, and a heartfelt donation to support
-                    the Emmanuel Legacy Health Foundation in their effort to
-                    rebuild their chapel, all these in addition to regular
-                    annual scholarships and other grants.
+                    Our Foundation is committed to making a meaningful and
+                    enduring contribution to the future of St. Andrew Lutheran
+                    Church (SALC), thoughtfully nurturing and sustaining its
+                    legacy of faith and the principles upon which it was built.
+                    Thanks to generous donations and contributions, the
+                    Foundation has been able to financially support important
+                    programs and organizations within the church and in the
+                    Portland metro community. Examples of SALC beneficiaries
+                    include the Horizon Team, The Roots Children&apos;s Ministry
+                    Program, tuition for St. Andrew members to participate in
+                    the Reckoning with Racism workshop, and many scholarships
+                    granted to graduating seniors and seminarians. Community
+                    organizations include Metropolitan Alliance for the Common
+                    Good, Legacy Emmanuel Hospital chapel renovation, Dandelion
+                    House, and the DEAR Program.
                   </p>
                   <p>
-                    If you remember us in your will or make a gift now, you are
-                    ensuring that St. Andrew Lutheran Church Foundation, far in
-                    the future, will have funds to support programs and
-                    activities and people we can only dream of.
+                    The SALC Foundation is funded through donations, will/estate
+                    bequests, and beneficiary designation of life insurance
+                    policies. With your generous financial support, our
+                    Foundation will be able to continue providing grants, thus
+                    extending its mission of faith for generations to come.
                   </p>
                 </div>
-                <div className="mt-6 flex flex-wrap gap-3">
+                <div className="mt-5 flex flex-wrap gap-3">
                   <button
                     type="button"
                     onClick={() => setTab('applications')}
@@ -259,9 +264,6 @@ export default function FoundationContainer({ initialData }: FoundationProps) {
               {/* Media Gallery Card (Full-Width Continuous Playlist Loop) */}
               <div className="bg-white rounded-2xl p-8 border border-[#E4E9ED] shadow-[0_4px_20px_-2px_rgba(30,39,54,0.05)]">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xs font-bold uppercase text-[#1E2736]/70 tracking-wider">
-                    Media Gallery Feed
-                  </h3>
                   {initialData.homeClips.length > 1 && (
                     <span className="text-[11px] font-semibold text-[#1E2736]/60">
                       Clip {activeClipIndex + 1} of{' '}
@@ -269,7 +271,6 @@ export default function FoundationContainer({ initialData }: FoundationProps) {
                     </span>
                   )}
                 </div>
-
                 {initialData.homeClips.length === 0 ? (
                   <p className="text-sm text-[#2C3E50]/70 italic bg-[#F0F3F6] p-4 rounded-xl">
                     No active clips found in Drive storage.
@@ -382,7 +383,7 @@ export default function FoundationContainer({ initialData }: FoundationProps) {
                 <h2 className="text-3xl font-bold text-[#1E2736]">
                   Grant & Scholarship Portals
                 </h2>
-                <p className="text-[#2C3E50] text-sm max-w-2xl mt-2 leading-relaxed">
+                <p className="text-[#2C3E50] text-sm mt-2 leading-relaxed">
                   Please verify that your parameters align with our formal
                   Prerequisites and Acceptance Criteria documents prior to
                   submitting your application.
